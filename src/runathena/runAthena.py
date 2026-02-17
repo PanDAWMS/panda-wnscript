@@ -77,8 +77,9 @@ except NameError:
 from pandawnutil.wnmisc.misc_utils import commands_get_status_output, get_file_via_http, record_exec_directory,\
     propagate_missing_sandbox_error, make_log_tarball_in_sub_dirs, tweak_job_options
 from pandawnutil.wnmisc.error_codes import ErrorCodes
+from pandawnutil.build_timestamp import build_timestamp
 
-print ("=== start ===")
+print ("=== start with build timestamp: %s" % build_timestamp)
 print(datetime.datetime.utcnow())
 print("")
 
@@ -358,6 +359,15 @@ if not postprocess:
             # BS on xrootd
             directIn = False
             print ("disabled directIn for xrootd/RAW")
+
+    # remove duplication while keeping order
+    seen = set()
+    unique = []
+    for x in inputFiles:
+        if x not in seen:
+            seen.add(x)
+            unique.append(x)
+    inputFiles = unique
 
     # remove skipped files
     if skipInputByRetry != []:

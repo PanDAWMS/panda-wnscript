@@ -22,6 +22,7 @@ from pandawnutil.wnmisc.misc_utils import commands_get_status_output, get_file_v
     propagate_missing_sandbox_error
 from pandawnutil.root import root_utils
 from pandawnutil.wnmisc.error_codes import ErrorCodes
+from pandawnutil.build_timestamp import build_timestamp
 
 # error code
 EC = ErrorCodes('runGen')
@@ -33,7 +34,7 @@ EC_WGET        = EC.FAILED_TO_GET_TARBALL
 EC_MissingOutput = EC.OUTPUT_MISSING
 EC_PayloadFailure = EC.PAYLOAD_FAILURE
 
-print ("=== start ===")
+print ("=== start with build timestamp: %s" % build_timestamp)
 print(datetime.datetime.utcnow())
 
 debugFlag    = False
@@ -246,6 +247,14 @@ if not postprocess:
         for inputFile in tmpList:
             if not inputFile in inputFiles:
                 inputFiles.append(inputFile)
+    # remove duplication while keeping order
+    seen = set()
+    unique = []
+    for x in inputFiles:
+        if x not in seen:
+            seen.add(x)
+            unique.append(x)
+    inputFiles = unique
     print ('')
     print ("===== inputFiles with inMap =====")
     print ("inputFiles",inputFiles)
