@@ -1,0 +1,13 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Build artifacts
+# NOTE: dist/ is intentionally committed (built executables); only the temp build dir is ignored.
+/build/
+
+# Editor
+.vscode/
+
+# macOS
+.DS_Store
