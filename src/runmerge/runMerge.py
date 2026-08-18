@@ -430,12 +430,12 @@ def __merge_user__(inputFiles, outputFile, cmdEnvSetup, userCmd, dumpFile=None):
 
     return EC
 
-def __run_merge__(inputType, inputFiles, outputFile, cmdEnvSetup='', userCmd=None, dumpFile=None, directIn=False):
+def __run_merge__(inputType, inputFiles, outputFile, cmdEnvSetup='', userCmd=None, dumpFile=None, directIn=False, mergeSingleFile=False):
     '''
     all-in-one function to run different type of merging algorithms
     '''
 
-    if len(inputFiles) == 1 and not directIn:
+    if len(inputFiles) == 1 and not directIn and not (mergeSingleFile and inputType in ['user']):
         # use mv for local 1-to-1 file merging to avoid doubling disk usage
         EC = __merge_mv__(inputFiles, outputFile, dumpFile)
         if EC == EC_OK:
@@ -540,6 +540,7 @@ if __name__ == "__main__":
     outputDS   = ''
     preprocess = False
     postprocess = False
+    mergeSingleFile = False
 
     # command-line argument parsing
     opts = None
@@ -558,7 +559,7 @@ if __name__ == "__main__":
                                     "useFileStager", "usePFCTurl", "accessmode=",
                                     "skipInputByRetry=","writeInputToTxt=",
                                     "rootVer=", "enable-jem", "jem-config=", "cmtConfig=",
-                                    "useCMake", "preprocess", "postprocess"
+                                    "useCMake", "preprocess", "postprocess", "mergeSingleFile"
                                     ])
     except getopt.GetoptError as err:
         print (str(err))
@@ -636,6 +637,8 @@ if __name__ == "__main__":
             preprocess = True
         if o == "--postprocess":
             postprocess = True
+        if o == "--mergeSingleFile":
+            mergeSingleFile = True
 
     # dump parameter
     try:
@@ -675,6 +678,7 @@ if __name__ == "__main__":
         print ("useCMake",useCMake)
         print ("preprocess", preprocess)
         print ("postprocess", postprocess)
+        print ("mergeSingleFile", mergeSingleFile)
         print ("===================")
     except Exception as e:
         print ('ERROR: missing parameters : %s' % str(e))
@@ -815,7 +819,7 @@ if __name__ == "__main__":
                 print ("=== writing command ===")
             ## run merging
             EC = __run_merge__(inputType, inputFiles, outputFile, cmdEnvSetup=cmdEnvSetup, userCmd=mexec,
-                               dumpFile=dumpFile, directIn=directIn)
+                               dumpFile=dumpFile, directIn=directIn, mergeSingleFile=mergeSingleFile)
             if EC != EC_OK:
                 print ("run_merge failed with %s" % EC)
                 break
