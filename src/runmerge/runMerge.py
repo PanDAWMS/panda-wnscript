@@ -238,7 +238,7 @@ def __merge_root__(inputFiles, outputFile, cmdEnvSetup='', dumpFile=None):
     cmd  = cmdEnvSetup
 
     cmd += ' export PATH=.:$PATH;'
-    cmd += ' hadd -f -n 5'
+    cmd += ' hadd -f'
     cmd += ' %s' % outputFile
     cmd += ' %s'    % ' '.join(inputFiles)
 
